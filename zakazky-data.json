@@ -1,0 +1,483 @@
+{
+  "zakazky": [
+    {
+      "cislo": "26-0001",
+      "nazev": "Forma kolotoč",
+      "zakaznik": "KO POklop",
+      "typ": "Nová Forma",
+      "objednavka": "obj-001",
+      "datumZadani": "2026-04-01",
+      "termin": "2026-04-17",
+      "cena": "225000",
+      "zaznamy": [
+        {
+          "id": "8bdd037b-0c64-435b-a001-fafdc14e13e7",
+          "zamestnanecId": "5fef8941-a6c3-4983-8d0b-a7e228fc8869",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "20:03",
+          "casDo": "20:56",
+          "hodin": 0.88,
+          "poznamka": ""
+        },
+        {
+          "id": "c4c50f3a-b0c0-42af-9966-404fe52cd264",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": "20:37",
+          "casDo": "21:11",
+          "hodin": 0.57,
+          "poznamka": ""
+        },
+        {
+          "id": "5edf8320-c998-4081-b3a3-d6542a291016",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": null,
+          "casDo": "20:44",
+          "hodin": null,
+          "poznamka": "obvody"
+        },
+        {
+          "id": "01db194b-7c8e-4a62-b954-cb960dd759ac",
+          "zamestnanecId": "5fef8941-a6c3-4983-8d0b-a7e228fc8869",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": "21:12",
+          "casDo": "21:19",
+          "hodin": 0.12,
+          "poznamka": ""
+        },
+        {
+          "id": "7741be70-cc40-4cd1-8565-0f484d327ac7",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "622566f4-c4a3-4821-b816-57108b26628a",
+          "datum": "2026-04-14",
+          "casOd": "21:20",
+          "casDo": "21:40",
+          "hodin": 0.33,
+          "poznamka": ""
+        }
+      ]
+    },
+    {
+      "cislo": "26-0002",
+      "nazev": "Oprava vyvařením",
+      "zakaznik": "BuRtik",
+      "typ": "Oprava",
+      "objednavka": "obj-556",
+      "datumZadani": "2026-04-14",
+      "termin": "2026-04-30",
+      "cena": "27599",
+      "zaznamy": [
+        {
+          "id": "2b6a890b-2d15-4f5c-bb14-b3248800aaf3",
+          "zamestnanecId": "e530a47a-a952-4dc1-b6c3-fdeb3085992d",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": null,
+          "casDo": "20:56",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "73ea61d1-30bf-4e75-b9f2-29c01aa10935",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "38abbe66-41a5-4e76-aad4-69984ceed557",
+          "datum": "2026-04-14",
+          "casOd": "20:25",
+          "casDo": "20:57",
+          "hodin": 0.53,
+          "poznamka": ""
+        },
+        {
+          "id": "33b4dfb6-82c1-4174-bdc5-4c45cf8a40d9",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:06",
+          "casDo": "21:19",
+          "hodin": 0.22,
+          "poznamka": ""
+        },
+        {
+          "id": "b0e7ee60-0517-4036-a941-61d4bf127b05",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:21",
+          "casDo": "21:40",
+          "hodin": 0.32,
+          "poznamka": ""
+        },
+        {
+          "id": "d7dff152-5a78-498d-be8b-d4adee4187be",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "ed21dbe4-85b5-4b77-a978-842dfe82f04a",
+          "datum": "2026-04-14",
+          "casOd": "21:40",
+          "casDo": "21:40",
+          "hodin": null,
+          "poznamka": ""
+        }
+      ]
+    },
+    {
+      "cislo": "26-1058",
+      "nazev": "Nové díly",
+      "zakaznik": "LIMET",
+      "typ": "Modifikace",
+      "objednavka": "ko-p-13",
+      "datumZadani": "2026-04-13",
+      "termin": "2026-04-28",
+      "cena": "56000",
+      "zaznamy": [
+        {
+          "id": "4e01e335-e7f0-47a1-8dde-101db1e0e4cb",
+          "zamestnanecId": "ea6d627e-0ce7-4716-be11-fb68368b98ae",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "20:05",
+          "casDo": "20:29",
+          "hodin": 0.4,
+          "poznamka": ""
+        },
+        {
+          "id": "7f025154-1db9-45b6-b195-ae905b027de8",
+          "zamestnanecId": "e530a47a-a952-4dc1-b6c3-fdeb3085992d",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": "21:09",
+          "casDo": "21:19",
+          "hodin": 0.17,
+          "poznamka": ""
+        },
+        {
+          "id": "0ef31ec1-3250-48ac-aaf4-6c7273cdd22a",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:18",
+          "casDo": "21:18",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "32d5d221-0f1a-4508-82e8-3bcb8a69377f",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:18",
+          "casDo": "21:19",
+          "hodin": 0.02,
+          "poznamka": ""
+        },
+        {
+          "id": "6f0cb6f3-8369-4b9d-9dc6-81ef29b305fb",
+          "zamestnanecId": "e530a47a-a952-4dc1-b6c3-fdeb3085992d",
+          "strojId": "ed21dbe4-85b5-4b77-a978-842dfe82f04a",
+          "datum": "2026-04-14",
+          "casOd": "21:39",
+          "casDo": "21:39",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "5e775238-8e9e-46d0-83eb-88bbd3357aa3",
+          "zamestnanecId": "e530a47a-a952-4dc1-b6c3-fdeb3085992d",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": "21:39",
+          "casDo": "21:40",
+          "hodin": 0.02,
+          "poznamka": ""
+        },
+        {
+          "id": "1a0b15e6-6d32-402e-b8f3-4d44d88bc9b5",
+          "zamestnanecId": "ea6d627e-0ce7-4716-be11-fb68368b98ae",
+          "strojId": "e9040398-1b42-4613-97e8-5f6dbc3779c2",
+          "datum": "2026-04-14",
+          "casOd": "21:39",
+          "casDo": "21:40",
+          "hodin": 0.02,
+          "poznamka": ""
+        }
+      ]
+    },
+    {
+      "cislo": "26-0003",
+      "nazev": "2333333",
+      "zakaznik": "KO POklop",
+      "typ": "Nová Forma",
+      "objednavka": "12-636",
+      "datumZadani": "2026-04-04",
+      "termin": "2026-04-13",
+      "cena": "2000",
+      "zaznamy": [
+        {
+          "id": "ecb50769-1eb8-4065-ba90-5122e7b0d6a0",
+          "zamestnanecId": "ea6d627e-0ce7-4716-be11-fb68368b98ae",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "20:36",
+          "casDo": "20:57",
+          "hodin": 0.35,
+          "poznamka": ""
+        },
+        {
+          "id": "46f5d0d0-2916-4a60-a54d-deaa7bbefc73",
+          "zamestnanecId": "5fef8941-a6c3-4983-8d0b-a7e228fc8869",
+          "strojId": "622566f4-c4a3-4821-b816-57108b26628a",
+          "datum": "2026-04-14",
+          "casOd": "20:37",
+          "casDo": "21:12",
+          "hodin": 0.58,
+          "poznamka": ""
+        },
+        {
+          "id": "0ef81bd8-4818-4697-bdc5-01851c1d3e8a",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": "21:02",
+          "casDo": "21:19",
+          "hodin": 0.28,
+          "poznamka": ""
+        },
+        {
+          "id": "b740578c-66ac-4a11-b3ec-2975e6b41235",
+          "zamestnanecId": "ea6d627e-0ce7-4716-be11-fb68368b98ae",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "16:11",
+          "casDo": "18:21",
+          "hodin": 2.17,
+          "poznamka": ""
+        },
+        {
+          "id": "3473b64c-6883-48cc-9e13-f46387a4c144",
+          "zamestnanecId": "5fef8941-a6c3-4983-8d0b-a7e228fc8869",
+          "strojId": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+          "datum": "2026-04-14",
+          "casOd": "21:12",
+          "casDo": "21:19",
+          "hodin": 0.12,
+          "poznamka": ""
+        },
+        {
+          "id": "64958e44-0f21-433b-9d2d-819a554dd2f6",
+          "zamestnanecId": "5fef8941-a6c3-4983-8d0b-a7e228fc8869",
+          "strojId": "622566f4-c4a3-4821-b816-57108b26628a",
+          "datum": "2026-04-14",
+          "casOd": "21:12",
+          "casDo": "21:19",
+          "hodin": 0.12,
+          "poznamka": ""
+        },
+        {
+          "id": "dd57e943-6b61-445c-b783-7426f9f5362d",
+          "zamestnanecId": "ea6d627e-0ce7-4716-be11-fb68368b98ae",
+          "strojId": "ed21dbe4-85b5-4b77-a978-842dfe82f04a",
+          "datum": "2026-04-14",
+          "casOd": "21:17",
+          "casDo": "21:19",
+          "hodin": 0.03,
+          "poznamka": ""
+        },
+        {
+          "id": "a36c8a04-29cf-42dc-ba51-f897c7d3e94a",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:19",
+          "casDo": "21:19",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "2d5231e3-23da-40b3-876e-4430585b965c",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "38abbe66-41a5-4e76-aad4-69984ceed557",
+          "datum": "2026-04-14",
+          "casOd": "21:21",
+          "casDo": "21:40",
+          "hodin": 0.32,
+          "poznamka": ""
+        }
+      ]
+    },
+    {
+      "cislo": "26-0004",
+      "nazev": "jjkkkkkk",
+      "zakaznik": "BuRtik",
+      "typ": "Oprava",
+      "objednavka": "456-963",
+      "datumZadani": "2026-04-14",
+      "termin": "2026-06-11",
+      "cena": "1250000",
+      "zaznamy": [
+        {
+          "id": "047eacad-ac54-42c9-8b83-55afe90f73ae",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "e9040398-1b42-4613-97e8-5f6dbc3779c2",
+          "datum": "2026-04-14",
+          "casOd": null,
+          "casDo": "20:56",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "581bb583-9180-4f5f-a9b1-90e4c6bb8ace",
+          "zamestnanecId": "edd18d65-78b2-4950-b2b8-301d093515c0",
+          "strojId": "622566f4-c4a3-4821-b816-57108b26628a",
+          "datum": "2026-04-14",
+          "casOd": null,
+          "casDo": "20:56",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "cdd83687-ce74-4ee5-b557-c4c107656f0f",
+          "zamestnanecId": "edd18d65-78b2-4950-b2b8-301d093515c0",
+          "strojId": "ed21dbe4-85b5-4b77-a978-842dfe82f04a",
+          "datum": "2026-04-14",
+          "casOd": "21:17",
+          "casDo": "21:19",
+          "hodin": 0.03,
+          "poznamka": ""
+        },
+        {
+          "id": "1a22f3d7-9589-40f6-b479-fee371d9f3b7",
+          "zamestnanecId": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:19",
+          "casDo": "21:19",
+          "hodin": null,
+          "poznamka": ""
+        },
+        {
+          "id": "297eed48-6a40-4a49-b217-ca250ebb28bf",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "622566f4-c4a3-4821-b816-57108b26628a",
+          "datum": "2026-04-14",
+          "casOd": "21:21",
+          "casDo": "21:23",
+          "hodin": 0.03,
+          "poznamka": ""
+        },
+        {
+          "id": "39a72787-a410-422f-93a6-ef92d3cb24a0",
+          "zamestnanecId": "0e161c21-fc15-4d19-a191-000b2449f15a",
+          "strojId": "203fe661-ef03-4761-9431-7e2aade110a3",
+          "datum": "2026-04-14",
+          "casOd": "21:40",
+          "casDo": "21:40",
+          "hodin": null,
+          "poznamka": ""
+        }
+      ]
+    }
+  ],
+  "zakaznici": [
+    {
+      "id": "b1cc64d5-c4c2-4ed8-bc21-39622f1d2444",
+      "nazev": "LIMET"
+    },
+    {
+      "id": "fb0af3f8-1086-4616-bd34-0bfdc3f6afb2",
+      "nazev": "BuRtik"
+    },
+    {
+      "id": "44c933c5-9e37-4036-a8bf-fdb8e5871349",
+      "nazev": "KO POklop"
+    }
+  ],
+  "typy": [
+    {
+      "id": "011cb546-f6b7-475d-b7d3-785f517c5d1a",
+      "nazev": "Nová Forma"
+    },
+    {
+      "id": "b145eb42-ea0f-4935-a3d6-e181944d404c",
+      "nazev": "Modifikace"
+    },
+    {
+      "id": "fc9a968a-3632-4176-8484-5847d6536fba",
+      "nazev": "Oprava"
+    }
+  ],
+  "zamestnanci": [
+    {
+      "id": "5fef8941-a6c3-4983-8d0b-a7e228fc8869",
+      "nazev": "Karel",
+      "barcode": "101"
+    },
+    {
+      "id": "edd18d65-78b2-4950-b2b8-301d093515c0",
+      "nazev": "Pepa",
+      "barcode": "102"
+    },
+    {
+      "id": "ea6d627e-0ce7-4716-be11-fb68368b98ae",
+      "nazev": "Ludvík",
+      "barcode": "103"
+    },
+    {
+      "id": "59e2a9f8-dbe0-4f9e-b0b7-aa5e64492a5a",
+      "nazev": "Jiřin",
+      "barcode": "104"
+    },
+    {
+      "id": "0e161c21-fc15-4d19-a191-000b2449f15a",
+      "nazev": "Debil",
+      "barcode": "105"
+    },
+    {
+      "id": "e530a47a-a952-4dc1-b6c3-fdeb3085992d",
+      "nazev": "Nedebil",
+      "barcode": "106"
+    }
+  ],
+  "stroje": [
+    {
+      "id": "622566f4-c4a3-4821-b816-57108b26628a",
+      "nazev": "DMG 1",
+      "barcode": "001",
+      "sazba": 1250
+    },
+    {
+      "id": "38abbe66-41a5-4e76-aad4-69984ceed557",
+      "nazev": "DMG 2",
+      "barcode": "002",
+      "sazba": 1250
+    },
+    {
+      "id": "203fe661-ef03-4761-9431-7e2aade110a3",
+      "nazev": "DMG 3",
+      "barcode": "003",
+      "sazba": 1500
+    },
+    {
+      "id": "9a186e39-0aa1-488d-ac51-97cd7b21a6dd",
+      "nazev": "HURCO 10",
+      "barcode": "004",
+      "sazba": 900
+    },
+    {
+      "id": "e9040398-1b42-4613-97e8-5f6dbc3779c2",
+      "nazev": "HURCO 60",
+      "barcode": "005",
+      "sazba": 1000
+    },
+    {
+      "id": "ed21dbe4-85b5-4b77-a978-842dfe82f04a",
+      "nazev": "Ruční dílna",
+      "barcode": "006",
+      "sazba": 700,
+      "viceZamestnancu": true
+    }
+  ]
+}
