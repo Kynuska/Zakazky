@@ -154,7 +154,7 @@ tr:hover td { background: #f9fbfd; }
 .working-card {
   background: #fff; border-radius: 8px; padding: 12px 16px;
   box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  display: grid; grid-template-columns: auto 1fr auto auto auto;
+  display: grid; grid-template-columns: auto 1fr auto auto auto auto;
   align-items: center; gap: 10px;
   border-left: 4px solid #27ae60;
 }
@@ -610,6 +610,23 @@ function clockOut(zakázka, zaznam) {
   saveData();
 }
 
+function clockOutById(zaznamId) {
+  for (const z of data.zakazky) {
+    const r = (z.zaznamy || []).find(x => x.id === zaznamId && x.casDo === null);
+    if (!r) continue;
+    clockOut(z, r);
+    const emp   = data.zamestnanci.find(x => x.id === r.zamestnanecId);
+    const stroj = data.stroje.find(x => x.id === r.strojId);
+    const empName   = emp   ? emp.nazev   : '?';
+    const strojName = stroj ? stroj.nazev : '?';
+    termMsg(`✓  ${empName} / ${strojName} — ukončeno (${r.hodin ?? '?'} h)`, 'ok');
+    renderWorkingList();
+    renderZakazky();
+    renderStats();
+    return;
+  }
+}
+
 function resetJobTimeout() {
   clearTimeout(tsJobTimeout);
   tsJobTimeout = setTimeout(() => { ts.jobCislo = null; ts.empId = null; ts.empNazev = null; ts.step = 1; updateTerminalUI(); }, 60000);
@@ -714,6 +731,7 @@ function renderWorkingList() {
       <div class="wc-job">${esc(zakázka.cislo)}</div>
       <div class="wc-since">od ${zaznam.casOd || '?'}</div>
       <div class="wc-elapsed" id="elapsed-${zaznam.id}">${elapsedStr(zaznam.casOd)}</div>
+      <button class="btn btn-sm btn-del" onclick="clockOutById('${zaznam.id}')" title="Ukončit práci">Konec</button>
     </div>`).join('');
 }
 
