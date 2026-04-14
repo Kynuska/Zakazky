@@ -1,0 +1,49 @@
+====================================================
+  SKLAD — rychlý průvodce
+====================================================
+
+
+ZAČÁTEK PRÁCE
+-------------
+1. Spusť spustit-claude.bat
+2. Claude načte kontext automaticky (CLAUDE.md)
+3. Pracuj normálně — zadávej úkoly přímo
+
+
+KONEC DNE
+---------
+Napiš Claudovi:  konec dne
+
+Claude provede:
+  - zkontroluje změny (git status)
+  - navrhne popis commitu
+  - uloží na GitHub (commit + push)
+
+
+MILNÍK
+------
+Milník = nová číslovaná verze aplikace.
+Používej ho po větší změně, která funguje a chceš ji "zakonzervovat".
+
+Napiš Claudovi:  milník
+
+Claude provede:
+  1. Vytvoří nový aktivní soubor v kořeni
+     (např. sklad_v4.30-mezery.html → sklad_v4.31-novy-popis.html)
+  2. Starý aktivní soubor přesune do Zaloha/
+  3. Smaže průběžné mikro-zálohy s timestampem (ty dočasné)
+  4. Archivní zálohy bez timestampu nechá být
+
+Tip: popis za číslem verze navrh sám — např. "milník: přidán filtr skupin"
+
+
+STRUKTURA SLOŽEK
+----------------
+  sklad_v*.html   — aktuální aplikace (otevři v prohlížeči)
+  muj_sklad.json  — data skladu
+  Zaloha/         — archivní verze aplikace
+  Zdroje/         — zdrojová Excel data (inventura, sklad, výdejna)
+  CLAUDE.md       — instrukce pro Claude (neupravuj ručně)
+
+
+====================================================
