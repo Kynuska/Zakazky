@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zakázky v1.1</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 14px; }
+
+/* ── HEADER ── */
+header { background: #1e3a5f; color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
+header h1 { font-size: 1.2rem; font-weight: 600; }
+header .version { font-size: .8rem; opacity: .55; }
+
+/* ── NAV ── */
+nav { background: #16324f; display: flex; flex-wrap: wrap; }
+nav button {
+  color: #cdd9e5; background: none; border: none;
+  padding: 10px 20px; cursor: pointer; font-size: .85rem;
+  border-bottom: 3px solid transparent; transition: background .15s;
+}
+nav button.active { color: #fff; border-bottom-color: #4a9eda; }
+nav button:hover { background: #1e3a5f; }
+
+/* ── SCAN BAR ── */
+.scan-bar {
+  background: #fff; border-bottom: 1px solid #dce3ea;
+  padding: 10px 20px; display: flex; align-items: center; gap: 14px;
+}
+.scan-bar label { font-size: .82rem; color: #555; white-space: nowrap; font-weight: 500; }
+.scan-bar input[type=text] {
+  border: 2px solid #4a9eda; border-radius: 4px;
+  padding: 6px 12px; font-size: 1rem;
+  font-family: monospace; font-weight: 600;
+  width: 130px; letter-spacing: 1px;
+}
+.scan-bar input[type=text]:focus { outline: none; border-color: #1e3a5f; background: #f0f8ff; }
+.scan-hint { font-size: .78rem; color: #999; }
+
+/* ── MAIN ── */
+main { padding: 18px 20px; }
+
+/* ── STATS ── */
+.stats { display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat-card { background: #fff; border-radius: 6px; padding: 12px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.07); min-width: 110px; }
+.stat-card .num { font-size: 1.6rem; font-weight: 700; color: #1e3a5f; }
+.stat-card .lbl { font-size: .73rem; color: #888; text-transform: uppercase; letter-spacing: .3px; }
+
+/* ── TOOLBAR ── */
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+.toolbar input[type=search] {
+  border: 1px solid #cdd5de; border-radius: 4px;
+  padding: 6px 12px; font-size: .85rem; width: 240px;
+}
+.toolbar input[type=search]:focus { outline: none; border-color: #4a9eda; }
+
+/* ── TABLE ── */
+.table-wrap { background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.08); overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: #f5f7fa; color: #444; font-weight: 600;
+  padding: 10px 12px; text-align: left; border-bottom: 2px solid #e0e6ed;
+  white-space: nowrap; cursor: pointer; user-select: none;
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .3px;
+}
+th.no-sort { cursor: default; }
+th:not(.no-sort):hover { background: #edf0f4; }
+td { padding: 9px 12px; border-bottom: 1px solid #edf0f4; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f9fbfd; }
+.cislo-cell { font-family: monospace; font-weight: 700; color: #1e3a5f; font-size: 1rem; }
+.badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: .76rem; background: #e8f0fe; color: #1e3a5f; font-weight: 500; }
+.termin-ok { color: #27ae60; }
+.termin-blizi { color: #e67e22; font-weight: 600; }
+.termin-po { color: #c0392b; font-weight: 600; }
+.barcode-cell { font-family: monospace; font-size: .85rem; color: #666; }
+
+/* ── BUTTONS ── */
+.btn { padding: 7px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: .83rem; font-weight: 500; transition: opacity .15s; }
+.btn:hover { opacity: .82; }
+.btn-primary { background: #1e3a5f; color: #fff; }
+.btn-success { background: #27ae60; color: #fff; }
+.btn-sm { padding: 4px 10px; font-size: .78rem; }
+.btn-edit { background: #e8f0fe; color: #1e3a5f; }
+.btn-del  { background: #fde8e8; color: #c0392b; }
+.btn-ghost { background: #f0f2f5; color: #444; }
+.btn-detail { background: #fff3e0; color: #e67e22; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.45); z-index: 100;
+  justify-content: center; align-items: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #fff; border-radius: 8px; padding: 26px 28px;
+  width: 640px; max-width: 97vw; max-height: 93vh;
+  overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,.18);
+}
+.modal-wide { width: 820px; }
+.modal h2 { font-size: 1.05rem; margin-bottom: 20px; color: #1e3a5f; }
+
+/* ── TABS ── */
+.tabs { display: flex; border-bottom: 2px solid #e0e6ed; margin-bottom: 20px; }
+.tab {
+  padding: 8px 18px; cursor: pointer; font-size: .88rem;
+  color: #777; border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.tab.active { color: #1e3a5f; font-weight: 600; border-bottom-color: #4a9eda; }
+
+/* ── FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .full { grid-column: 1 / -1; }
+.field label { display: block; font-size: .75rem; color: #555; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+.field input, .field select {
+  width: 100%; border: 1px solid #cdd5de; border-radius: 4px;
+  padding: 8px 10px; font-size: .9rem; font-family: inherit; background: #fff;
+}
+.field input:focus, .field select:focus { outline: none; border-color: #4a9eda; box-shadow: 0 0 0 2px rgba(74,158,218,.15); }
+.field .cislo-input { font-family: monospace; font-size: 1rem; font-weight: 700; letter-spacing: 1px; }
+.field input[disabled] { background: #f5f7fa; color: #888; }
+
+.modal-footer { margin-top: 22px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #edf0f4; padding-top: 16px; }
+
+/* ── ZÁZNAMY PRÁCE ── */
+.zaznam-form {
+  background: #f5f9ff; border: 1px solid #d0e4f7; border-radius: 6px;
+  padding: 16px; margin-bottom: 18px;
+}
+.zaznam-form h3 { font-size: .88rem; color: #1e3a5f; margin-bottom: 14px; font-weight: 600; }
+.scan-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.scan-row label { font-size: .78rem; color: #555; font-weight: 600; white-space: nowrap; width: 90px; }
+.scan-row input[type=text] {
+  border: 2px solid #4a9eda; border-radius: 4px;
+  padding: 5px 10px; font-size: .88rem;
+  font-family: monospace; width: 130px; letter-spacing: 1px;
+}
+.scan-row input[type=text]:focus { outline: none; border-color: #1e3a5f; }
+.scan-row .resolved { font-size: .88rem; color: #27ae60; font-weight: 500; }
+.scan-row .unresolved { font-size: .88rem; color: #e67e22; }
+.zaznam-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.zaznam-row .field { flex: 1; min-width: 100px; }
+
+.zaznamy-list table { font-size: .85rem; }
+.zaznamy-list th { font-size: .72rem; }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 36px; color: #bbb; font-size: .9rem; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 22px; right: 22px;
+  background: #1e3a5f; color: #fff;
+  padding: 10px 20px; border-radius: 6px; font-size: .88rem;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+  z-index: 300; box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+#toast.show { opacity: 1; }
+#toast.err { background: #c0392b; }
+
+.hidden { display: none !important; }
+.right { text-align: right; }
+.mono { font-family: monospace; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zakázky</h1>
+  <span class="version">v1.1</span>
+</header>
+
+<nav>
+  <button class="active" onclick="showView('zakazky')">Zakázky</button>
+  <button onclick="showView('zakaznici')">Zákazníci</button>
+  <button onclick="showView('typy')">Typy zakázek</button>
+  <button onclick="showView('zamestnanci')">Zaměstnanci</button>
+  <button onclick="showView('stroje')">Stroje</button>
+</nav>
+
+<div class="scan-bar" id="scanBar">
+  <label>Sken zakázky:</label>
+  <input type="text" id="barcodeInput" placeholder="00-0000" maxlength="20"
+         autocomplete="off" autocorrect="off" spellcheck="false">
+  <span class="scan-hint">Naskenuj čárový kód zakázky → otevře se detail s možností záznamu práce</span>
+</div>
+
+<main>
+
+  <!-- ════ ZAKÁZKY ════ -->
+  <div id="view-zakazky">
+    <div class="stats" id="statsBar"></div>
+    <div class="toolbar">
+      <input type="search" id="searchZakazky" placeholder="Hledat v zakázkách…" oninput="renderZakazky()">
+      <button class="btn btn-primary" onclick="openZakazkaModal(null)">+ Nová zakázka</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('cislo')">Číslo <span id="sort-cislo"></span></th>
+            <th onclick="sortBy('nazev')">Název <span id="sort-nazev"></span></th>
+            <th onclick="sortBy('zakaznik')">Zákazník <span id="sort-zakaznik"></span></th>
+            <th onclick="sortBy('typ')">Typ <span id="sort-typ"></span></th>
+            <th onclick="sortBy('termin')">Termín <span id="sort-termin"></span></th>
+            <th onclick="sortBy('cena')" class="right">Cena <span id="sort-cena"></span></th>
+            <th class="no-sort">Záznamy</th>
+            <th class="no-sort"></th>
+          </tr>
+        </thead>
+        <tbody id="tbodyZakazky"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════ ZÁKAZNÍCI ════ -->
+  <div id="view-zakaznici" class="hidden">
+    <div class="toolbar">
+      <input type="search" id="searchZakaznici" placeholder="Hledat…" oninput="renderZakaznici()">
+      <button class="btn btn-primary" onclick="openZakaznikModal(null)">+ Nový zákazník</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Název zákazníka</th><th style="width:130px" class="no-sort"></th></tr></thead>
+        <tbody id="tbodyZakaznici"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════ TYPY ZAKÁZEK ════ -->
+  <div id="view-typy" class="hidden">
+    <div class="toolbar">
+      <span></span>
+      <button class="btn btn-primary" onclick="openTypModal(null)">+ Nový typ</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Typ zakázky</th><th style="width:130px" class="no-sort"></th></tr></thead>
+        <tbody id="tbodyTypy"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════ ZAMĚSTNANCI ════ -->
+  <div id="view-zamestnanci" class="hidden">
+    <div class="toolbar">
+      <input type="search" id="searchZamestnanci" placeholder="Hledat…" oninput="renderZamestnanci()">
+      <button class="btn btn-primary" onclick="openZamestnanecModal(null)">+ Nový zaměstnanec</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Jméno</th>
+            <th>Čárový kód</th>
+            <th style="width:130px" class="no-sort"></th>
+          </tr>
+        </thead>
+        <tbody id="tbodyZamestnanci"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════ STROJE ════ -->
+  <div id="view-stroje" class="hidden">
+    <div class="toolbar">
+      <input type="search" id="searchStroje" placeholder="Hledat…" oninput="renderStroje()">
+      <button class="btn btn-primary" onclick="openStrojModal(null)">+ Nový stroj</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Název stroje</th>
+            <th>Čárový kód</th>
+            <th style="width:130px" class="no-sort"></th>
+          </tr>
+        </thead>
+        <tbody id="tbodyStroje"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══════ MODAL: Zakázka (základní údaje) ══════ -->
+<div class="modal-overlay" id="modalZakazka">
+  <div class="modal">
+    <h2 id="modalZakazkaTitle">Nová zakázka</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Číslo zakázky *</label>
+        <input type="text" id="fCislo" class="cislo-input" placeholder="26-0001" maxlength="7" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Číslo objednávky</label>
+        <input type="text" id="fObjednavka">
+      </div>
+      <div class="field full">
+        <label>Název zakázky *</label>
+        <input type="text" id="fNazev">
+      </div>
+      <div class="field">
+        <label>Zákazník *</label>
+        <select id="fZakaznik"><option value="">— vyberte —</option></select>
+      </div>
+      <div class="field">
+        <label>Typ zakázky</label>
+        <select id="fTyp"><option value="">— vyberte —</option></select>
+      </div>
+      <div class="field">
+        <label>Datum zadání</label>
+        <input type="date" id="fDatumZadani">
+      </div>
+      <div class="field">
+        <label>Termín</label>
+        <input type="date" id="fTermin">
+      </div>
+      <div class="field full">
+        <label>Cena (Kč)</label>
+        <input type="number" id="fCena" placeholder="0" min="0" step="1">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModals()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveZakazka()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: Detail zakázky + záznamy práce ══════ -->
+<div class="modal-overlay" id="modalDetail">
+  <div class="modal modal-wide">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div>
+        <h2 id="detailTitle" style="margin-bottom:4px"></h2>
+        <div id="detailMeta" style="font-size:.85rem;color:#666"></div>
+      </div>
+      <button class="btn btn-sm btn-edit" id="detailEditBtn" onclick="openZakazkaModalFromDetail()">Upravit údaje</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchDetailTab('zaznamy')">Záznamy práce</div>
+      <div class="tab" onclick="switchDetailTab('prehled')">Přehled hodin</div>
+    </div>
+
+    <!-- TAB: Záznamy -->
+    <div id="detailTabZaznamy">
+      <!-- Formulář pro přidání záznamu -->
+      <div class="zaznam-form">
+        <h3>Přidat záznam práce</h3>
+
+        <div class="scan-row">
+          <label>Zaměstnanec:</label>
+          <input type="text" id="scanZamestnanec" placeholder="sken / kód"
+                 autocomplete="off" spellcheck="false"
+                 oninput="resolveZamestnanec()" onkeydown="handleZaznamScan(event,'zamestnanec')">
+          <span id="resolvedZamestnanec" class="unresolved">—</span>
+          <select id="selZamestnanec" style="flex:1;border:1px solid #cdd5de;border-radius:4px;padding:5px 8px;font-size:.85rem"
+                  onchange="syncSelectToScan('zamestnanec')">
+            <option value="">— nebo vyberte —</option>
+          </select>
+        </div>
+
+        <div class="scan-row">
+          <label>Stroj:</label>
+          <input type="text" id="scanStroj" placeholder="sken / kód"
+                 autocomplete="off" spellcheck="false"
+                 oninput="resolveStroj()" onkeydown="handleZaznamScan(event,'stroj')">
+          <span id="resolvedStroj" class="unresolved">—</span>
+          <select id="selStroj" style="flex:1;border:1px solid #cdd5de;border-radius:4px;padding:5px 8px;font-size:.85rem"
+                  onchange="syncSelectToScan('stroj')">
+            <option value="">— nebo vyberte —</option>
+          </select>
+        </div>
+
+        <div class="zaznam-row" style="margin-top:10px">
+          <div class="field">
+            <label>Datum</label>
+            <input type="date" id="zDatum">
+          </div>
+          <div class="field">
+            <label>Počet hodin</label>
+            <input type="number" id="zHodin" placeholder="0.0" min="0.1" step="0.5" style="width:100px">
+          </div>
+          <div class="field" style="flex:2">
+            <label>Poznámka</label>
+            <input type="text" id="zPoznamka" placeholder="volitelně">
+          </div>
+          <div style="padding-bottom:2px">
+            <button class="btn btn-success" onclick="saveZaznam()">+ Uložit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seznam záznamů -->
+      <div class="zaznamy-list">
+        <table>
+          <thead>
+            <tr>
+              <th class="no-sort">Datum</th>
+              <th class="no-sort">Zaměstnanec</th>
+              <th class="no-sort">Stroj</th>
+              <th class="no-sort right">Hodin</th>
+              <th class="no-sort">Poznámka</th>
+              <th class="no-sort" style="width:60px"></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyZaznamy"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: Přehled -->
+    <div id="detailTabPrehled" class="hidden">
+      <div id="prehledContent"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModals()">Zavřít</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: Zákazník ══════ -->
+<div class="modal-overlay" id="modalZakaznik">
+  <div class="modal" style="width:380px">
+    <h2 id="modalZakaznikTitle">Nový zákazník</h2>
+    <div class="field">
+      <label>Název zákazníka *</label>
+      <input type="text" id="fZakaznikNazev">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModals()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveZakaznik()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: Typ ══════ -->
+<div class="modal-overlay" id="modalTyp">
+  <div class="modal" style="width:380px">
+    <h2 id="modalTypTitle">Nový typ zakázky</h2>
+    <div class="field">
+      <label>Název typu *</label>
+      <input type="text" id="fTypNazev">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModals()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveTyp()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: Zaměstnanec ══════ -->
+<div class="modal-overlay" id="modalZamestnanec">
+  <div class="modal" style="width:420px">
+    <h2 id="modalZamestnanecTitle">Nový zaměstnanec</h2>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Jméno *</label>
+        <input type="text" id="fZamestnanecNazev">
+      </div>
+      <div class="field full">
+        <label>Čárový kód (naskenuj nebo zadej ručně)</label>
+        <input type="text" id="fZamestnanecBarcode" class="cislo-input"
+               placeholder="" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModals()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveZamestnanec()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: Stroj ══════ -->
+<div class="modal-overlay" id="modalStroj">
+  <div class="modal" style="width:420px">
+    <h2 id="modalStrojTitle">Nový stroj</h2>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Název stroje *</label>
+        <input type="text" id="fStrojNazev">
+      </div>
+      <div class="field full">
+        <label>Čárový kód (naskenuj nebo zadej ručně)</label>
+        <input type="text" id="fStrojBarcode" class="cislo-input"
+               placeholder="" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModals()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveStroj()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════
+const STORE_KEY = 'zakazky_v1';
+
+let data = loadData();
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      // migrace: doplnit nové knihovny pokud chybí
+      d.zamestnanci = d.zamestnanci || [];
+      d.stroje = d.stroje || [];
+      // migrace: doplnit zaznamy do zakázek
+      (d.zakazky || []).forEach(z => { z.zaznamy = z.zaznamy || []; });
+      return d;
+    }
+  } catch (e) { /* ignore */ }
+  return { zakazky: [], zakaznici: [], typy: [], zamestnanci: [], stroje: [] };
+}
+
+function saveData() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+// ════════════════════════════════════════════════
+//  VIEWS
+// ════════════════════════════════════════════════
+const VIEWS = ['zakazky','zakaznici','typy','zamestnanci','stroje'];
+let currentView = 'zakazky';
+
+function showView(v) {
+  currentView = v;
+  document.querySelectorAll('nav button').forEach((b, i) => {
+    b.classList.toggle('active', VIEWS[i] === v);
+  });
+  VIEWS.forEach(n => document.getElementById('view-' + n).classList.toggle('hidden', n !== v));
+  document.getElementById('scanBar').classList.toggle('hidden', v !== 'zakazky');
+  renderAll();
+}
+
+function renderAll() {
+  renderZakazky();
+  renderZakaznici();
+  renderTypy();
+  renderZamestnanci();
+  renderStroje();
+  renderStats();
+}
+
+// ════════════════════════════════════════════════
+//  SORT (zakázky)
+// ════════════════════════════════════════════════
+let sortCol = 'cislo', sortAsc = true;
+
+function sortBy(col) {
+  sortAsc = sortCol === col ? !sortAsc : true;
+  sortCol = col;
+  updateSortIndicators();
+  renderZakazky();
+}
+
+function updateSortIndicators() {
+  ['cislo','nazev','zakaznik','typ','termin','cena'].forEach(c => {
+    const el = document.getElementById('sort-' + c);
+    if (el) el.textContent = sortCol === c ? (sortAsc ? '▲' : '▼') : '';
+  });
+}
+
+// ════════════════════════════════════════════════
+//  STATS
+// ════════════════════════════════════════════════
+function renderStats() {
+  const today = todayStr();
+  const total  = data.zakazky.length;
+  const poT    = data.zakazky.filter(z => z.termin && z.termin < today).length;
+  const blizi  = data.zakazky.filter(z => z.termin && daysDiff(today, z.termin) >= 0 && daysDiff(today, z.termin) <= 7).length;
+  const totalH = data.zakazky.reduce((s, z) => s + (z.zaznamy||[]).reduce((a,r) => a + (parseFloat(r.hodin)||0), 0), 0);
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">Zakázek</div></div>
+    <div class="stat-card"><div class="num" style="color:#e67e22">${blizi}</div><div class="lbl">Do 7 dní</div></div>
+    <div class="stat-card"><div class="num" style="color:#c0392b">${poT}</div><div class="lbl">Po termínu</div></div>
+    <div class="stat-card"><div class="num">${totalH.toLocaleString('cs-CZ')}</div><div class="lbl">Hodin celkem</div></div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+//  ZAKÁZKY — seznam
+// ════════════════════════════════════════════════
+function renderZakazky() {
+  const q = document.getElementById('searchZakazky').value.toLowerCase();
+  let list = data.zakazky.filter(z =>
+    z.cislo.includes(q) || z.nazev.toLowerCase().includes(q) ||
+    z.zakaznik.toLowerCase().includes(q) || (z.typ||'').toLowerCase().includes(q)
+  );
+  list.sort((a, b) => {
+    let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
+    if (sortCol === 'cena') return sortAsc ? (parseFloat(va)||0)-(parseFloat(vb)||0) : (parseFloat(vb)||0)-(parseFloat(va)||0);
+    return sortAsc ? String(va).localeCompare(String(vb),'cs') : String(vb).localeCompare(String(va),'cs');
+  });
+  const today = todayStr();
+  const tb = document.getElementById('tbodyZakazky');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">Žádné zakázky</td></tr>'; return; }
+  tb.innerHTML = list.map(z => {
+    const tc = terminColor(z.termin, today);
+    const pocetZaznamu = (z.zaznamy||[]).length;
+    const totalH = (z.zaznamy||[]).reduce((s,r) => s+(parseFloat(r.hodin)||0), 0);
+    return `<tr>
+      <td class="cislo-cell">${esc(z.cislo)}</td>
+      <td>${esc(z.nazev)}</td>
+      <td>${esc(z.zakaznik)}</td>
+      <td>${z.typ ? `<span class="badge">${esc(z.typ)}</span>` : ''}</td>
+      <td>${z.termin ? `<span class="${tc}">${fmtDate(z.termin)}</span>` : ''}</td>
+      <td class="right" style="font-variant-numeric:tabular-nums">${z.cena ? Number(z.cena).toLocaleString('cs-CZ')+'\u00a0Kč' : ''}</td>
+      <td style="color:#666;font-size:.82rem">${pocetZaznamu ? `${pocetZaznamu}× / ${totalH.toLocaleString('cs-CZ')} h` : ''}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm btn-detail" onclick="openDetail('${esc(z.cislo)}')">Záznamy</button>
+        <button class="btn btn-sm btn-edit"   onclick="openZakazkaModal('${esc(z.cislo)}')">Upravit</button>
+        <button class="btn btn-sm btn-del"    onclick="delZakazka('${esc(z.cislo)}')">Smazat</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════
+//  ZAKÁZKY — formulář
+// ════════════════════════════════════════════════
+let editCislo = null;
+
+function openZakazkaModal(cislo) {
+  fillZakazkaSelects();
+  editCislo = cislo || null;
+  const z = cislo ? data.zakazky.find(x => x.cislo === cislo) : null;
+  document.getElementById('modalZakazkaTitle').textContent = z ? `Zakázka ${z.cislo}` : 'Nová zakázka';
+  document.getElementById('fCislo').value        = z?.cislo        ?? '';
+  document.getElementById('fCislo').disabled     = !!z;
+  document.getElementById('fNazev').value        = z?.nazev        ?? '';
+  document.getElementById('fZakaznik').value     = z?.zakaznik     ?? '';
+  document.getElementById('fTyp').value          = z?.typ          ?? '';
+  document.getElementById('fObjednavka').value   = z?.objednavka   ?? '';
+  document.getElementById('fDatumZadani').value  = z?.datumZadani  ?? '';
+  document.getElementById('fTermin').value       = z?.termin       ?? '';
+  document.getElementById('fCena').value         = z?.cena         ?? '';
+  openModal('modalZakazka');
+  setTimeout(() => document.getElementById(z ? 'fNazev' : 'fCislo').focus(), 60);
+}
+
+function openZakazkaModalFromDetail() {
+  closeModals();
+  setTimeout(() => openZakazkaModal(currentDetailCislo), 50);
+}
+
+function saveZakazka() {
+  const cislo    = document.getElementById('fCislo').value.trim();
+  const nazev    = document.getElementById('fNazev').value.trim();
+  const zakaznik = document.getElementById('fZakaznik').value;
+  if (!cislo || !nazev || !zakaznik) { toast('Vyplňte povinná pole (*)', true); return; }
+  if (!/^\d{2}-\d{4}$/.test(cislo)) { toast('Číslo zakázky musí být ve formátu 00-0000', true); return; }
+  if (!editCislo && data.zakazky.find(z => z.cislo === cislo)) { toast('Zakázka s tímto číslem již existuje', true); return; }
+  const obj = {
+    cislo, nazev, zakaznik,
+    typ:         document.getElementById('fTyp').value,
+    objednavka:  document.getElementById('fObjednavka').value.trim(),
+    datumZadani: document.getElementById('fDatumZadani').value,
+    termin:      document.getElementById('fTermin').value,
+    cena:        document.getElementById('fCena').value,
+    zaznamy:     editCislo ? (data.zakazky.find(z=>z.cislo===editCislo)?.zaznamy || []) : [],
+  };
+  if (editCislo) data.zakazky[data.zakazky.findIndex(z => z.cislo === editCislo)] = obj;
+  else data.zakazky.push(obj);
+  saveData(); closeModals(); renderZakazky(); renderStats();
+  toast(editCislo ? 'Zakázka uložena' : 'Zakázka přidána');
+}
+
+function delZakazka(cislo) {
+  if (!confirm(`Smazat zakázku ${cislo} včetně všech záznamů práce?`)) return;
+  data.zakazky = data.zakazky.filter(z => z.cislo !== cislo);
+  saveData(); renderZakazky(); renderStats(); toast('Zakázka smazána');
+}
+
+function fillZakazkaSelects() {
+  const selZ = document.getElementById('fZakaznik');
+  const selT = document.getElementById('fTyp');
+  const sZ = [...data.zakaznici].sort((a,b) => a.nazev.localeCompare(b.nazev,'cs'));
+  const sT = [...data.typy].sort((a,b) => a.nazev.localeCompare(b.nazev,'cs'));
+  selZ.innerHTML = '<option value="">— vyberte zákazníka —</option>' + sZ.map(z=>`<option value="${esc(z.nazev)}">${esc(z.nazev)}</option>`).join('');
+  selT.innerHTML = '<option value="">— vyberte typ —</option>' + sT.map(t=>`<option value="${esc(t.nazev)}">${esc(t.nazev)}</option>`).join('');
+}
+
+// ════════════════════════════════════════════════
+//  DETAIL ZAKÁZKY + ZÁZNAMY PRÁCE
+// ════════════════════════════════════════════════
+let currentDetailCislo = null;
+let currentDetailTab = 'zaznamy';
+
+function openDetail(cislo) {
+  currentDetailCislo = cislo;
+  const z = data.zakazky.find(x => x.cislo === cislo);
+  if (!z) return;
+
+  document.getElementById('detailTitle').textContent = `${z.cislo} — ${z.nazev}`;
+  document.getElementById('detailMeta').textContent =
+    [z.zakaznik, z.typ, z.termin ? 'Termín: '+fmtDate(z.termin) : ''].filter(Boolean).join('  ·  ');
+  document.getElementById('detailEditBtn').dataset.cislo = cislo;
+
+  // reset formuláře záznamu
+  document.getElementById('scanZamestnanec').value = '';
+  document.getElementById('scanStroj').value = '';
+  document.getElementById('selZamestnanec').value = '';
+  document.getElementById('selStroj').value = '';
+  document.getElementById('resolvedZamestnanec').textContent = '—';
+  document.getElementById('resolvedZamestnanec').className = 'unresolved';
+  document.getElementById('resolvedStroj').textContent = '—';
+  document.getElementById('resolvedStroj').className = 'unresolved';
+  document.getElementById('zDatum').value = todayStr();
+  document.getElementById('zHodin').value = '';
+  document.getElementById('zPoznamka').value = '';
+
+  // naplnit selecty
+  fillDetailSelects();
+
+  switchDetailTab('zaznamy');
+  openModal('modalDetail');
+  setTimeout(() => document.getElementById('scanZamestnanec').focus(), 80);
+}
+
+function switchDetailTab(tab) {
+  currentDetailTab = tab;
+  document.querySelectorAll('#modalDetail .tab').forEach((t, i) => {
+    t.classList.toggle('active', ['zaznamy','prehled'][i] === tab);
+  });
+  document.getElementById('detailTabZaznamy').classList.toggle('hidden', tab !== 'zaznamy');
+  document.getElementById('detailTabPrehled').classList.toggle('hidden', tab !== 'prehled');
+  if (tab === 'zaznamy') renderZaznamy();
+  else renderPrehled();
+}
+
+function fillDetailSelects() {
+  const sZ = [...data.zamestnanci].sort((a,b) => a.nazev.localeCompare(b.nazev,'cs'));
+  const sS = [...data.stroje].sort((a,b) => a.nazev.localeCompare(b.nazev,'cs'));
+  document.getElementById('selZamestnanec').innerHTML =
+    '<option value="">— nebo vyberte —</option>' + sZ.map(z=>`<option value="${z.id}">${esc(z.nazev)}</option>`).join('');
+  document.getElementById('selStroj').innerHTML =
+    '<option value="">— nebo vyberte —</option>' + sS.map(s=>`<option value="${s.id}">${esc(s.nazev)}</option>`).join('');
+}
+
+// resolve barcode → entity
+function resolveZamestnanec() {
+  const val = document.getElementById('scanZamestnanec').value.trim();
+  const z = val ? data.zamestnanci.find(x => x.barcode === val) : null;
+  const el = document.getElementById('resolvedZamestnanec');
+  if (z) {
+    el.textContent = z.nazev; el.className = 'resolved';
+    document.getElementById('selZamestnanec').value = z.id;
+  } else {
+    el.textContent = val ? '?' : '—'; el.className = 'unresolved';
+    if (!val) document.getElementById('selZamestnanec').value = '';
+  }
+}
+
+function resolveStroj() {
+  const val = document.getElementById('scanStroj').value.trim();
+  const s = val ? data.stroje.find(x => x.barcode === val) : null;
+  const el = document.getElementById('resolvedStroj');
+  if (s) {
+    el.textContent = s.nazev; el.className = 'resolved';
+    document.getElementById('selStroj').value = s.id;
+  } else {
+    el.textContent = val ? '?' : '—'; el.className = 'unresolved';
+    if (!val) document.getElementById('selStroj').value = '';
+  }
+}
+
+function syncSelectToScan(type) {
+  if (type === 'zamestnanec') {
+    const id = document.getElementById('selZamestnanec').value;
+    const z = data.zamestnanci.find(x => x.id === id);
+    document.getElementById('scanZamestnanec').value = z?.barcode ?? '';
+    resolveZamestnanec();
+  } else {
+    const id = document.getElementById('selStroj').value;
+    const s = data.stroje.find(x => x.id === id);
+    document.getElementById('scanStroj').value = s?.barcode ?? '';
+    resolveStroj();
+  }
+}
+
+function handleZaznamScan(e, type) {
+  if (e.key !== 'Enter') return;
+  // Enter v scan poli = přesun fokus na další pole
+  if (type === 'zamestnanec') document.getElementById('scanStroj').focus();
+  else document.getElementById('zHodin').focus();
+}
+
+function saveZaznam() {
+  const zamestnanecId = document.getElementById('selZamestnanec').value;
+  const strojId       = document.getElementById('selStroj').value;
+  const datum         = document.getElementById('zDatum').value;
+  const hodin         = parseFloat(document.getElementById('zHodin').value);
+  const poznamka      = document.getElementById('zPoznamka').value.trim();
+
+  if (!zamestnanecId) { toast('Vyberte zaměstnance', true); return; }
+  if (!datum)          { toast('Zadejte datum', true); return; }
+  if (!hodin || hodin <= 0) { toast('Zadejte počet hodin', true); return; }
+
+  const zaznam = { id: uid(), zamestnanecId, strojId, datum, hodin, poznamka };
+  const z = data.zakazky.find(x => x.cislo === currentDetailCislo);
+  z.zaznamy.push(zaznam);
+  saveData();
+
+  // reset scan polí
+  document.getElementById('scanZamestnanec').value = '';
+  document.getElementById('scanStroj').value = '';
+  document.getElementById('selZamestnanec').value = '';
+  document.getElementById('selStroj').value = '';
+  document.getElementById('resolvedZamestnanec').textContent = '—';
+  document.getElementById('resolvedZamestnanec').className = 'unresolved';
+  document.getElementById('resolvedStroj').textContent = '—';
+  document.getElementById('resolvedStroj').className = 'unresolved';
+  document.getElementById('zHodin').value = '';
+  document.getElementById('zPoznamka').value = '';
+
+  renderZaznamy();
+  renderZakazky();
+  renderStats();
+  toast('Záznam přidán');
+  document.getElementById('scanZamestnanec').focus();
+}
+
+function renderZaznamy() {
+  const z = data.zakazky.find(x => x.cislo === currentDetailCislo);
+  const list = [...(z?.zaznamy || [])].sort((a,b) => b.datum.localeCompare(a.datum));
+  const tb = document.getElementById('tbodyZaznamy');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">Žádné záznamy</td></tr>'; return; }
+  tb.innerHTML = list.map(r => {
+    const zam = data.zamestnanci.find(x => x.id === r.zamestnanecId);
+    const str = data.stroje.find(x => x.id === r.strojId);
+    return `<tr>
+      <td>${fmtDate(r.datum)}</td>
+      <td>${zam ? esc(zam.nazev) : '<span style="color:#c0392b">smazán</span>'}</td>
+      <td>${str ? esc(str.nazev) : (r.strojId ? '<span style="color:#c0392b">smazán</span>' : '')}</td>
+      <td class="right mono">${r.hodin}</td>
+      <td>${esc(r.poznamka||'')}</td>
+      <td><button class="btn btn-sm btn-del" onclick="delZaznam('${r.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function delZaznam(id) {
+  if (!confirm('Smazat tento záznam?')) return;
+  const z = data.zakazky.find(x => x.cislo === currentDetailCislo);
+  z.zaznamy = z.zaznamy.filter(r => r.id !== id);
+  saveData(); renderZaznamy(); renderZakazky(); renderStats(); toast('Záznam smazán');
+}
+
+function renderPrehled() {
+  const z = data.zakazky.find(x => x.cislo === currentDetailCislo);
+  const zaznamy = z?.zaznamy || [];
+  const el = document.getElementById('prehledContent');
+  if (!zaznamy.length) { el.innerHTML = '<p class="empty">Žádné záznamy práce</p>'; return; }
+
+  // součty po zaměstnancích
+  const byZam = {};
+  zaznamy.forEach(r => {
+    const zam = data.zamestnanci.find(x => x.id === r.zamestnanecId);
+    const key = zam ? zam.nazev : '(smazaný)';
+    byZam[key] = (byZam[key] || 0) + (parseFloat(r.hodin) || 0);
+  });
+  // součty po strojích
+  const byStr = {};
+  zaznamy.forEach(r => {
+    if (!r.strojId) return;
+    const str = data.stroje.find(x => x.id === r.strojId);
+    const key = str ? str.nazev : '(smazaný)';
+    byStr[key] = (byStr[key] || 0) + (parseFloat(r.hodin) || 0);
+  });
+
+  const totalH = zaznamy.reduce((s,r) => s+(parseFloat(r.hodin)||0), 0);
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div>
+        <h3 style="font-size:.88rem;color:#1e3a5f;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px">Hodiny podle zaměstnanců</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th class="no-sort">Zaměstnanec</th><th class="no-sort right">Hodin</th></tr></thead>
+            <tbody>
+              ${Object.entries(byZam).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+                <tr><td>${esc(k)}</td><td class="right mono">${v.toLocaleString('cs-CZ')}</td></tr>
+              `).join('')}
+              <tr style="font-weight:700;border-top:2px solid #e0e6ed">
+                <td>Celkem</td><td class="right mono">${totalH.toLocaleString('cs-CZ')}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:.88rem;color:#1e3a5f;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px">Hodiny podle strojů</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th class="no-sort">Stroj</th><th class="no-sort right">Hodin</th></tr></thead>
+            <tbody>
+              ${Object.keys(byStr).length
+                ? Object.entries(byStr).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+                    <tr><td>${esc(k)}</td><td class="right mono">${v.toLocaleString('cs-CZ')}</td></tr>
+                  `).join('')
+                : '<tr><td colspan="2" class="empty">Žádné stroje</td></tr>'
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+//  ZÁKAZNÍCI
+// ════════════════════════════════════════════════
+let editZakaznikId = null;
+function renderZakaznici() {
+  const q = document.getElementById('searchZakaznici').value.toLowerCase();
+  const list = [...data.zakaznici].filter(z=>z.nazev.toLowerCase().includes(q)).sort((a,b)=>a.nazev.localeCompare(b.nazev,'cs'));
+  const tb = document.getElementById('tbodyZakaznici');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="2" class="empty">Žádní zákazníci</td></tr>'; return; }
+  tb.innerHTML = list.map(z=>`<tr>
+    <td>${esc(z.nazev)}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-edit" onclick="openZakaznikModal('${z.id}')">Upravit</button>
+      <button class="btn btn-sm btn-del"  onclick="delZakaznik('${z.id}')">Smazat</button>
+    </td></tr>`).join('');
+}
+function openZakaznikModal(id) {
+  editZakaznikId = id || null;
+  const z = id ? data.zakaznici.find(x=>x.id===id) : null;
+  document.getElementById('modalZakaznikTitle').textContent = z ? 'Upravit zákazníka' : 'Nový zákazník';
+  document.getElementById('fZakaznikNazev').value = z?.nazev ?? '';
+  openModal('modalZakaznik');
+  setTimeout(()=>document.getElementById('fZakaznikNazev').focus(),60);
+}
+function saveZakaznik() {
+  const nazev = document.getElementById('fZakaznikNazev').value.trim();
+  if (!nazev) { toast('Zadejte název',true); return; }
+  if (editZakaznikId) data.zakaznici.find(z=>z.id===editZakaznikId).nazev = nazev;
+  else { if(data.zakaznici.find(z=>z.nazev.toLowerCase()===nazev.toLowerCase())){toast('Již existuje',true);return;} data.zakaznici.push({id:uid(),nazev}); }
+  saveData(); closeModals(); renderZakaznici(); toast('Zákazník uložen');
+}
+function delZakaznik(id) {
+  const z = data.zakaznici.find(x=>x.id===id);
+  if(!confirm(`Smazat "${z.nazev}"?`))return;
+  data.zakaznici = data.zakaznici.filter(x=>x.id!==id);
+  saveData(); renderZakaznici(); toast('Zákazník smazán');
+}
+
+// ════════════════════════════════════════════════
+//  TYPY ZAKÁZEK
+// ════════════════════════════════════════════════
+let editTypId = null;
+function renderTypy() {
+  const tb = document.getElementById('tbodyTypy');
+  const list = [...data.typy].sort((a,b)=>a.nazev.localeCompare(b.nazev,'cs'));
+  if(!list.length){tb.innerHTML='<tr><td colspan="2" class="empty">Žádné typy</td></tr>';return;}
+  tb.innerHTML = list.map(t=>`<tr>
+    <td>${esc(t.nazev)}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-edit" onclick="openTypModal('${t.id}')">Upravit</button>
+      <button class="btn btn-sm btn-del"  onclick="delTyp('${t.id}')">Smazat</button>
+    </td></tr>`).join('');
+}
+function openTypModal(id) {
+  editTypId = id||null;
+  const t = id?data.typy.find(x=>x.id===id):null;
+  document.getElementById('modalTypTitle').textContent = t?'Upravit typ':'Nový typ zakázky';
+  document.getElementById('fTypNazev').value = t?.nazev??'';
+  openModal('modalTyp');
+  setTimeout(()=>document.getElementById('fTypNazev').focus(),60);
+}
+function saveTyp() {
+  const nazev = document.getElementById('fTypNazev').value.trim();
+  if(!nazev){toast('Zadejte název',true);return;}
+  if(editTypId) data.typy.find(t=>t.id===editTypId).nazev=nazev;
+  else data.typy.push({id:uid(),nazev});
+  saveData(); closeModals(); renderTypy(); toast('Typ uložen');
+}
+function delTyp(id) {
+  const t=data.typy.find(x=>x.id===id);
+  if(!confirm(`Smazat "${t.nazev}"?`))return;
+  data.typy=data.typy.filter(x=>x.id!==id);
+  saveData(); renderTypy(); toast('Typ smazán');
+}
+
+// ════════════════════════════════════════════════
+//  ZAMĚSTNANCI
+// ════════════════════════════════════════════════
+let editZamestnanecId = null;
+function renderZamestnanci() {
+  const q = document.getElementById('searchZamestnanci').value.toLowerCase();
+  const list = [...data.zamestnanci].filter(z=>z.nazev.toLowerCase().includes(q)||( z.barcode||'').toLowerCase().includes(q)).sort((a,b)=>a.nazev.localeCompare(b.nazev,'cs'));
+  const tb = document.getElementById('tbodyZamestnanci');
+  if(!list.length){tb.innerHTML='<tr><td colspan="3" class="empty">Žádní zaměstnanci</td></tr>';return;}
+  tb.innerHTML = list.map(z=>`<tr>
+    <td>${esc(z.nazev)}</td>
+    <td class="barcode-cell">${esc(z.barcode||'')}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-edit" onclick="openZamestnanecModal('${z.id}')">Upravit</button>
+      <button class="btn btn-sm btn-del"  onclick="delZamestnanec('${z.id}')">Smazat</button>
+    </td></tr>`).join('');
+}
+function openZamestnanecModal(id) {
+  editZamestnanecId = id||null;
+  const z = id?data.zamestnanci.find(x=>x.id===id):null;
+  document.getElementById('modalZamestnanecTitle').textContent = z?'Upravit zaměstnance':'Nový zaměstnanec';
+  document.getElementById('fZamestnanecNazev').value = z?.nazev??'';
+  document.getElementById('fZamestnanecBarcode').value = z?.barcode??'';
+  openModal('modalZamestnanec');
+  setTimeout(()=>document.getElementById('fZamestnanecNazev').focus(),60);
+}
+function saveZamestnanec() {
+  const nazev   = document.getElementById('fZamestnanecNazev').value.trim();
+  const barcode = document.getElementById('fZamestnanecBarcode').value.trim();
+  if(!nazev){toast('Zadejte jméno',true);return;}
+  if(barcode && data.zamestnanci.find(z=>z.barcode===barcode && z.id!==editZamestnanecId)){toast('Tento čárový kód je již přiřazen jinému zaměstnanci',true);return;}
+  if(editZamestnanecId) { const z=data.zamestnanci.find(x=>x.id===editZamestnanecId); z.nazev=nazev; z.barcode=barcode; }
+  else data.zamestnanci.push({id:uid(),nazev,barcode});
+  saveData(); closeModals(); renderZamestnanci(); toast('Zaměstnanec uložen');
+}
+function delZamestnanec(id) {
+  const z=data.zamestnanci.find(x=>x.id===id);
+  if(!confirm(`Smazat "${z.nazev}"?`))return;
+  data.zamestnanci=data.zamestnanci.filter(x=>x.id!==id);
+  saveData(); renderZamestnanci(); toast('Zaměstnanec smazán');
+}
+
+// ════════════════════════════════════════════════
+//  STROJE
+// ════════════════════════════════════════════════
+let editStrojId = null;
+function renderStroje() {
+  const q = document.getElementById('searchStroje').value.toLowerCase();
+  const list = [...data.stroje].filter(s=>s.nazev.toLowerCase().includes(q)||(s.barcode||'').toLowerCase().includes(q)).sort((a,b)=>a.nazev.localeCompare(b.nazev,'cs'));
+  const tb = document.getElementById('tbodyStroje');
+  if(!list.length){tb.innerHTML='<tr><td colspan="3" class="empty">Žádné stroje</td></tr>';return;}
+  tb.innerHTML = list.map(s=>`<tr>
+    <td>${esc(s.nazev)}</td>
+    <td class="barcode-cell">${esc(s.barcode||'')}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-edit" onclick="openStrojModal('${s.id}')">Upravit</button>
+      <button class="btn btn-sm btn-del"  onclick="delStroj('${s.id}')">Smazat</button>
+    </td></tr>`).join('');
+}
+function openStrojModal(id) {
+  editStrojId = id||null;
+  const s = id?data.stroje.find(x=>x.id===id):null;
+  document.getElementById('modalStrojTitle').textContent = s?'Upravit stroj':'Nový stroj';
+  document.getElementById('fStrojNazev').value = s?.nazev??'';
+  document.getElementById('fStrojBarcode').value = s?.barcode??'';
+  openModal('modalStroj');
+  setTimeout(()=>document.getElementById('fStrojNazev').focus(),60);
+}
+function saveStroj() {
+  const nazev   = document.getElementById('fStrojNazev').value.trim();
+  const barcode = document.getElementById('fStrojBarcode').value.trim();
+  if(!nazev){toast('Zadejte název',true);return;}
+  if(barcode && data.stroje.find(s=>s.barcode===barcode && s.id!==editStrojId)){toast('Tento čárový kód je již přiřazen jinému stroji',true);return;}
+  if(editStrojId) { const s=data.stroje.find(x=>x.id===editStrojId); s.nazev=nazev; s.barcode=barcode; }
+  else data.stroje.push({id:uid(),nazev,barcode});
+  saveData(); closeModals(); renderStroje(); toast('Stroj uložen');
+}
+function delStroj(id) {
+  const s=data.stroje.find(x=>x.id===id);
+  if(!confirm(`Smazat "${s.nazev}"?`))return;
+  data.stroje=data.stroje.filter(x=>x.id!==id);
+  saveData(); renderStroje(); toast('Stroj smazán');
+}
+
+// ════════════════════════════════════════════════
+//  BARCODE — hlavní sken zakázky
+// ════════════════════════════════════════════════
+document.getElementById('barcodeInput').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const val = e.target.value.trim();
+  e.target.value = '';
+  if (!val) return;
+  const found = data.zakazky.find(z => z.cislo === val);
+  if (found) {
+    openDetail(val);
+  } else if (/^\d{2}-\d{4}$/.test(val)) {
+    openZakazkaModal(null);
+    document.getElementById('fCislo').value = val;
+    toast(`Zakázka ${val} nenalezena — vytváří se nová`);
+  } else {
+    toast(`Kód "${val}" nebyl rozpoznán jako číslo zakázky`, true);
+  }
+});
+
+// ════════════════════════════════════════════════
+//  MODALS
+// ════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+function closeModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) closeModals(); });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModals(); return; }
+  if (e.key === 'Enter' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SELECT') {
+    const om = document.querySelector('.modal-overlay.open');
+    if (!om) return;
+    if (om.id === 'modalZakazka')    { saveZakazka();    return; }
+    if (om.id === 'modalZakaznik')   { saveZakaznik();   return; }
+    if (om.id === 'modalTyp')        { saveTyp();        return; }
+    if (om.id === 'modalZamestnanec'){ saveZamestnanec();return; }
+    if (om.id === 'modalStroj')      { saveStroj();      return; }
+  }
+});
+
+// ════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════
+let toastTimer;
+function toast(msg, isError) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = isError ? 'err show' : 'show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 2800);
+}
+
+// ════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,dd] = d.split('-');
+  return `${dd}.${m}.${y}`;
+}
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function daysDiff(from, to) { return Math.round((new Date(to)-new Date(from))/86400000); }
+function terminColor(termin, today) {
+  if (!termin) return '';
+  const d = daysDiff(today, termin);
+  return d < 0 ? 'termin-po' : d <= 7 ? 'termin-blizi' : 'termin-ok';
+}
+function uid() {
+  return crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2);
+}
+function esc(s) {
+  return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
+updateSortIndicators();
+renderAll();
+document.getElementById('barcodeInput').focus();
+</script>
+</body>
+</html>
