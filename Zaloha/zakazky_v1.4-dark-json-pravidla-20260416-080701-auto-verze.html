@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zakázky</title>
+<title>Zakázky v1.3</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0d1117; color: #e6edf3; font-size: 14px; }
@@ -207,7 +207,7 @@ tr:hover td { background: #1c2128; }
 
 <header>
   <h1>Zakázky</h1>
-  <span class="version" id="appVersion"></span>
+  <span class="version">v1.3</span>
   <span id="saveStatus" style="font-size:.75rem;margin-left:auto;opacity:.85"></span>
   <button id="btnChangeFile" onclick="changeFile()" style="font-size:.72rem;background:rgba(255,255,255,.12);color:#cdd9e5;border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:3px 10px;cursor:pointer;display:none" title="Změnit datový soubor">📁 Soubor</button>
 </header>
@@ -517,15 +517,6 @@ tr:hover td { background: #1c2128; }
 
 <script>
 'use strict';
-
-// Verze z názvu souboru (např. zakazky_v1.4-... → "v1.4")
-(function() {
-  const m = location.pathname.match(/zakazky_v(\d+\.\d+)/);
-  const ver = m ? 'v' + m[1] : '';
-  const el = document.getElementById('appVersion');
-  if (el) el.textContent = ver;
-  if (ver) document.title = 'Zakázky ' + ver;
-})();
 
 // ════════════════════════════════════════════
 //  DATA — File System Access API + IndexedDB
