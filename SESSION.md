@@ -6,7 +6,7 @@
 ---
 
 ## Datum poslední session
-2026-04-23
+2026-04-24
 
 ## Fáze
 Fáze 1 — HTML frontend (aktivní vývoj)
@@ -15,19 +15,13 @@ Fáze 1 — HTML frontend (aktivní vývoj)
 `zakazky_v1.4-dark-json-pravidla.html`
 
 ## Co bylo v poslední session
-- Probrána a odsouhlasena architektura budoucího systému (HTML → Node.js + SQLite + LAN)
-- Vytvořeny plánovací soubory: PLAN.md, SESSION.md, start.md, konec.md
-- Redesign aplikace do barev NISAFORM s.r.o.:
-  - Header: modrá #1e22aa (barva loga)
-  - Pozadí: tmavě modrá tónovaná (#08091a, #0e1035)
-  - Akcenty: #6670ff, bordery #252880
-  - Logo NISAFORM přidáno do headeru (bílý rámeček, obrázek ze Zdroje/nisa.jpg)
-  - Zachovány funkční barvy: zelená, červená, žlutá
+- Přesun adresáře na `C:\_Projekty\_Zakazky` — opraveny hard cesty v `spustit-claude.bat` a `Čti mě.txt`
+- `Čti mě.txt` přepsán ze starých SKLAD referencí na ZAKÁZKY
+- PLAN.md doplněn o volitelný krok 2e — Build (build.js pro případ růstu frontendu)
 
 ## Co je příště na řadě
-- Doladit design (pokud uživatel chce úpravy)
-- Doplnit do PLAN.md chybějící položky Fáze 1 (co ještě ve frontendu chybí?)
 - Pokračovat ve vývoji frontendu — nové funkce dle potřeby
+- Doplnit do PLAN.md chybějící položky Fáze 1 (co ještě ve frontendu chybí?)
 
 ## Otevřené body / problémy
 - Není zatím jasný kompletní seznam chybějících funkcí ve frontendu — probrat s uživatelem

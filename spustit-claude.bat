@@ -1,3 +1,3 @@
 @echo off
-cd /d "C:\_Projekty\_Upínače, svěráky, bordel\Zakazky"
+cd /d "C:\_Projekty\_Zakazky"
 claude

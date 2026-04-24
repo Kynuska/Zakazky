@@ -64,7 +64,11 @@ GitHub spravuje uživatel sám přes GitHub Desktop.
 - [ ] Real-time refresh pracujících (polling nebo SSE)
 - [ ] Error handling při nedostupném serveru
 
-### 2e — Testování v LAN
+### 2e — Build (volitelné)
+- [ ] `build.js` — spojení JS/CSS do jednoho HTML (pokud frontend přeroste jeden soubor)
+- [ ] Automatické vkládání verze/datumu do buildu
+
+### 2f — Testování v LAN
 - [ ] Spustit server na jednom PC, přistoupit z druhého
 - [ ] Ověřit souběžný přístup (více klientů najednou)
 
