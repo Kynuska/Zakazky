@@ -6,26 +6,32 @@
 ---
 
 ## Datum poslední session
-2026-04-24
+2026-05-29
 
 ## Fáze
-Fáze 1 — HTML frontend (aktivní vývoj)
+Fáze 1 — HTML frontend (aktivní, ale vývoj pozastaven — přechod na NISAVEROS)
 
 ## Aktivní soubor
 `zakazky_v1.4-dark-json-pravidla.html`
 
 ## Co bylo v poslední session
-- Přesun adresáře na `C:\_Projekty\_Zakazky` — opraveny hard cesty v `spustit-claude.bat` a `Čti mě.txt`
-- `Čti mě.txt` přepsán ze starých SKLAD referencí na ZAKÁZKY
-- PLAN.md doplněn o volitelný krok 2e — Build (build.js pro případ růstu frontendu)
+- Navržena architektura nového systému NISAVEROS (nový projekt)
+- Rozhodnutí: Výdejna Nisaform zůstává separátní (režijní sklad), propojení pouze přes 4 API endpointy
+- Vytvořeny plánovací soubory v kořeni Zakázek: `NISAVEROS-PLAN.md`, `NISAVEROS-start.md`, `NISAVEROS-SESSION.md`
+- **Fáze 0 NISAVEROS dokončena** — projekt rozjetý v `C:\_Projekty\_NISAVEROS`
 
 ## Co je příště na řadě
-- Pokračovat ve vývoji frontendu — nové funkce dle potřeby
-- Doplnit do PLAN.md chybějící položky Fáze 1 (co ještě ve frontendu chybí?)
+- **Zakázky v1.4 se dále nevyvíjí** — data budou migrována do NISAVEROS v Fázi 1
+- Případné opravy/záplaty v Zakázkách jsou přijatelné do doby migrace
+- Nový vývoj probíhá v `C:\_Projekty\_NISAVEROS` — spustit Claude Code tam
 
 ## Otevřené body / problémy
-- Není zatím jasný kompletní seznam chybějících funkcí ve frontendu — probrat s uživatelem
-- Otevřené otázky z PLAN.md (přihlášení, role, export dat, zálohy SQLite)
+- NISAVEROS GitHub repozitář `_NISAVEROS` zatím neexistuje — uživatel vytvoří ručně:
+  ```
+  git remote add origin https://github.com/Kynuska/_NISAVEROS.git
+  git push -u origin master
+  ```
+- Plánovací soubory `NISAVEROS-*.md` v kořeni Zakázek lze po ověření smazat (jsou zkopírovány do NISAVEROS)
 
 ## Poznámky
-GitHub spravuje uživatel sám přes GitHub Desktop.
+NISAVEROS: `C:\_Projekty\_NISAVEROS` | server port `:3001` | `proved start.md` pro zahájení session
